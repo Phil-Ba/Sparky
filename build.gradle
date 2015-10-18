@@ -1,0 +1,35 @@
+group 'at.bayava'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'scala'
+apply plugin: 'idea'
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
+
+idea {
+	module {
+		downloadSources = true
+		downloadJavadoc = true
+	}
+}
+
+targetCompatibility = JavaVersion.VERSION_1_8
+
+dependencies {
+	compile 'org.scala-lang:scala-dist:2.11.+'
+	compile('org.apache.spark:spark-core_2.11:1.+') {
+		exclude group: 'com.esotericsoftware.reflectasm'
+		exclude group: 'com.esotericsoftware.kryo'
+	}
+	compile 'com.esotericsoftware:reflectasm:1.+'
+	compile 'com.esotericsoftware:reflectasm:1.+:shaded'
+	compile 'com.esotericsoftware:kryo:3.+'
+	compile 'org.apache.logging.log4j:log4j-core:2.+'
+	compile 'org.fluttercode.datafactory:datafactory:+'
+	compile 'joda-time:joda-time:2.8.+'
+	testCompile 'org.scalatest:scalatest_2.11:2.2.4'
+	testCompile 'org.scalacheck:scalacheck_2.11:1.12.+'
+}
