@@ -31,7 +31,7 @@ class MyRecordReader extends RecordReader[LongWritable, Text] {
     val path: Path = inputSplit.getPath
     val fs: FileSystem = path.getFileSystem(config)
     fileIn = fs.open(path)
-        pos = start
+    pos = start
     //        pos = if (start == 0) start else start -1
     // If Split "S" starts at byte 0, first line will be processed
     // If Split "S" does not start at byte 0, first line has been already
@@ -71,7 +71,7 @@ class MyRecordReader extends RecordReader[LongWritable, Text] {
     if (startIndex == -1) {
       startIndex = readIntoBufferWhileNotFound("{")
     }
-    if (startIndex == -1 || pos >= end) {
+    if (startIndex == -1 ) {
       return false
     }
     readString.delete(0, startIndex + 1)
