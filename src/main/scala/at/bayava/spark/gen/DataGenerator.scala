@@ -5,6 +5,7 @@ import java.math
 import java.math.MathContext
 import java.util.Date
 
+import com.fasterxml.jackson.core.JsonGenerator.Feature
 import com.fasterxml.jackson.core.{JsonFactory, JsonGenerator}
 import org.fluttercode.datafactory.impl.DataFactory
 import org.joda.time.{LocalDate, LocalDateTime}
@@ -18,10 +19,13 @@ trait DataGenerator[T <: math.BigDecimal] {
 
 	def generateReadingValue: T
 
+	val mc: MathContext = MathContext.UNLIMITED
+
 	def generateData(dataFileLocation: String, count: Int = 10000000): math.BigDecimal = {
 		val file: File = new File(dataFileLocation)
 		val factory: JsonFactory = new JsonFactory()
 		val fos: FileOutputStream = new FileOutputStream(file)
+		factory.enable(Feature.WRITE_BIGDECIMAL_AS_PLAIN)
 		val gen: JsonGenerator = factory.createGenerator(fos)
 		var sum: math.BigDecimal = math.BigDecimal.ZERO
 		gen.writeStartArray()
@@ -30,7 +34,7 @@ trait DataGenerator[T <: math.BigDecimal] {
 			gen.writeNumberField("id", df.getNumberBetween(0, count))
 			gen.writeStringField("tmstmp", modifyTime)
 			val temp = generateReadingValue
-			sum = sum.add(temp, MathContext.UNLIMITED)
+			sum = sum.add(temp, mc)
 			gen.writeNumberField("reading", temp)
 			gen.writeEndObject()
 		}
@@ -72,7 +76,7 @@ object RandomFloatDataGenerator extends DataGenerator[math.BigDecimal] {
 	val df: DataFactory = new DataFactory
 	val start = new LocalDate(2013, 9, 9).toDate
 
-	override def generateReadingValue: math.BigDecimal = new math.BigDecimal(Random.nextFloat())
+	override def generateReadingValue: math.BigDecimal = math.BigDecimal.valueOf(Random.nextFloat())
 }
 
 object RandomIntDataGenerator extends DataGenerator[math.BigDecimal] {
